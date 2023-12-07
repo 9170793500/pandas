@@ -91,99 +91,6 @@ sdm =df1['number'].sum()
 
 
 
-# import pandas as pd
-
-
-# df = pd.read_csv('master.csv', header=None)
-# columns = [3, 9]
-
-# data = df.iloc[:, columns]
-
-# columns = np.ceil(df.iloc[:, 13])
-# Equle_data = pd.concat([data, columns], axis=1)
-
-# Equle_data.columns = ['User', 'Date', 'Pulse']
-# Equle_data = Equle_data.dropna(subset=['Pulse'])
-# Equle_data['Pulse'] = Equle_data['Pulse'] / 15
-# Equle_data['Pulse'] = pd.to_numeric(Equle_data['Pulse'], errors='coerce')
-
-# Equle_data.groupby(['User', 'Date', 'Pulse']).median().reset_index()
-
-
-# group=Equle_data.to_excel("baaa.xlsx", sheet_name="Modified", index=False)
-# print(group)
-
-
-
-
-
-
-# import pandas as pd
-# import math as m
-# import smtplib
-# from email.message import EmailMessage
-
-
-# df = pd.read_csv('master.csv', header=None)
-
-# columns = [3, 9]
-
-# data = df.iloc[:, columns]
-# # print(data)
-# ceiled_pulse = df.iloc[:, 13].astype(float).apply(lambda x: m.ceil(x) // 15)
-
-# Equle_data = pd.concat([data, ceiled_pulse], axis=1)
-# Equle_data.columns = ['User', 'Date', 'Pulse']
-
-# Equle_data['Pulse'] = pd.to_numeric(Equle_data['Pulse'], errors='coerce')
-# Equle_data = Equle_data.dropna(subset=['Pulse'])
-
-
-# Equle_data.insert(0, 'Serial Number', range(1, len(Equle_data) + 1))
-
-# sum_by_date = Equle_data.groupby(['User'])[['Date','Pulse']].sum()
-
-# print(sum_by_date.head())
-
-# sum_by_date.to_excel("sum_date.xlsx", sheet_name="Sum_By_Date", index=False)
-
-# server = smtplib.SMTP('smtp.gmail.com', 587)
-# server.starttls()
-# server.login('sundrammaurya1996@gmail.com', 'okua lodv qjve oszg')
-
-# subject = "This is a check mail"
-# body_template = '''Hello,\n  sir work is complete \n\nThis is the data you requested:\n\n{data_text}\n\nRegards,\nSundram Maurya'''
-
-# Equle_data = pd.concat([data, ceiled_pulse], axis=1)
-# Equle_data.columns = ['User', 'Date', 'Pulse']
-# Equle_data['Pulse'] = pd.to_numeric(Equle_data['Pulse'], errors='coerce')
-# Equle_data = Equle_data.dropna(subset=['Pulse'])
-
-
-# data_text = Equle_data.to_html(index=False, border=1)
-# email_body = body_template.format(data_text=data_text)
-
-# msg = EmailMessage()
-# msg['From'] = 'sundrammaurya1996@gmail.com'
-# msg['To'] = 'mauryasundram1996@gmail.com'
-# msg['Subject'] = subject
-# msg.add_alternative(email_body, subtype='html')
-
-# with open("sum_by_date.xlsx", 'rb') as file:
-#     file_data = file.read()
-#     # msg.add_attachment(file_data, maintype='application', subtype='octet-stream', filename='sum_by_date.xlsx')
-
-# # Sending the email
-# server.send_message(msg)
-# server.quit()
-
-
-
-
-
-
-
-
 import pandas as pd
 import math as m
 import smtplib
@@ -225,7 +132,7 @@ try:
   grouped.to_sql(name='excel', con=engine, if_exists='replace', index=False)
   print("succes")  
 except:
-    print("not")
+    print("not") 
 
 engine.dispose() 
 
