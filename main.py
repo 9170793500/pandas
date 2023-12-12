@@ -18,23 +18,23 @@
 
 
 
-# Doing for zip file
-import pandas as pd
-import zipfile
-import os
+# # Doing for zip file
+# import pandas as pd
+# import zipfile
+# import os
 
-excel_file = 'data_20231211.xlsx' 
-data = pd.read_excel(excel_file)
+# excel_file = 'data_20231211.xlsx' 
+# data = pd.read_excel(excel_file)
 
-output_file = 'data_20231211.xlsx' 
-data.to_excel(output_file, index=False)
+# output_file = 'data_20231211.xlsx' 
+# data.to_excel(output_file, index=False)
 
 
-zip_file_name = 'data_20231211.zip' 
-with zipfile.ZipFile(zip_file_name, 'w') as zipf:
-    zipf.write(output_file)
+# zip_file_name = 'data_20231211.zip' 
+# with zipfile.ZipFile(zip_file_name, 'w') as zipf:
+#     zipf.write(output_file)
 
-os.remove(output_file)
+# os.remove(output_file)
 
 
 
@@ -132,14 +132,12 @@ columns_to_color = {'Date': 'blue', 'Total_Pulse': 'green'}  # Specify columns a
 data_text = df.to_html(index=False, border=1, escape=True)
 
 for column, color in columns_to_color.items():
-    # Apply color to the header cells of the respective columns
   
     data_text = data_text.replace(f'<th>{column}</th>', f'<th style="background-color: {color}; color: white;">{column}</th>')
 
     # Apply color to all cells of the respective column using a class or unique identifier
-    data_text = data_text.replace(f'<td>{column}</td>', f'<td class="{column}_class" style="background-color: {color}; color: white;">{column}</td>')
-
-
+    data_text = data_text.replace(f'<td>{column}</td>', f'<td  style="background-color:red; color: white;">{column}</td>')
+     
 # Email body template
 subject = "This is a check mail"
 body_template = f'''
