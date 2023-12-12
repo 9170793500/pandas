@@ -92,12 +92,12 @@ from sqlalchemy import create_engine
 
 df = pd.read_csv('master.csv', header=None)
 columns = [3, 9]
-data = df.iloc[:, columns]
+data = df.iloc[:, columns] #column select 
 
 ceiled_pulse = df.iloc[:, 13].astype(float).apply(lambda x: m.ceil(x) // 15)
 
 Equle_data = pd.concat([data, ceiled_pulse], axis=1)
-Equle_data.columns = ['User', 'Date', 'Pulse']
+Equle_data.columns = ['User', 'Date', 'Pulse'] #make in hedder 
 
 df = pd.DataFrame(Equle_data)
 
@@ -105,7 +105,7 @@ df['Date'] = pd.to_datetime(df['Date'])
 df['Date'] = df['Date'].dt.date
 
 Equle_data.insert(0, 'id', range(1, len(Equle_data) + 1))
-grouped = df.groupby(['User', 'Date'])['Pulse'].sum().reset_index()
+grouped = df.groupby(['User', 'Date'])['Pulse'].sum().reset_index() 
 grouped.columns = ['User','Date', 'Total_Pulse']
 
 
@@ -124,45 +124,68 @@ except:
     print("not") 
 
 
-
+# Reading data from the Excel file
 excel_file = "sum_by_date.xlsx"
-df = pd.read_excel(excel_file)
+sdm = pd.read_excel(excel_file)
+df = pd.DataFrame(sdm)
 
-columns_to_color = {'Date': 'blue', 'Total_Pulse': 'green'}  # Specify columns and their respective colors
-data_text = df.to_html(index=False, border=1, escape=True)
+# Function to color with HTML table 
+def table(df):
+    colors = {
+        'Date': '#FFFFE0',  # halka yellow
+        'Total_Pulse': '#90EE90'  # light green
+       
+    }
+    html_table = '<table style="border: 1px solid white; border-collapse: collapse;"><thead><tr>'
+    
+    # Add table  in header with  color
+    for col in df.columns:
+        html_table += f'<th style="padding: 5px; background-color: {colors.get(col, "white")}">{col}</th>'
+    
+    html_table += '</tr></thead><tbody>'
+    
+    # Add table rows with column
+    for index, row in df.iterrows():
+        html_table += '<tr>'
+        for col in df.columns:
+            html_table += f'<td style="padding: 5px; background-color: {colors.get(col, "white")}">{row[col]}</td>'
+        html_table += '</tr>'
+    
+    html_table += '</tbody></table>'
+    return html_table
 
-for column, color in columns_to_color.items():
-  
-    data_text = data_text.replace(f'<th>{column}</th>', f'<th style="background-color: {color}; color: white;">{column}</th>')
+data_html = table(df)
 
-    # Apply color to all cells of the respective column using a class or unique identifier
-    data_text = data_text.replace(f'<td>{column}</td>', f'<td  style="background-color:red; color: white;">{column}</td>')
-     
-# Email body template
 subject = "This is a check mail"
-body_template = f'''
-Hello,
-Sir, work is complete.
+body_template = f"""
+<html>
+<head>
+<style> 
+  table, th, td {{ border: 1px solid black; border-collapse: collapse; }}
+  th, td {{ padding: 5px; }}
+</style>
+</head>
 
-This is the data you requested:<br><br>
-
-{data_text}<br><br>
-
+<body>
+{data_html}
+<br>
 Regards,
 Sundram Maurya
-'''
-
-# Email composition with HTML body
+</body>
+</html>
+"""
+# Email in with HTML body
 msg = EmailMessage()
-msg['From'] = 'sundrammaurya1996@gmail.com'
-msg['To'] = 'mauryasundram1996@gmail.com'
+msg['From'] = 'interns@fonada.com'
+# msg['To'] = 'mauryasundram1996@gmail.com'
+msg['To'] = 'ravindra@fonada.com'
 msg['Subject'] = subject
 msg.add_alternative(body_template, subtype='html')
 
 server = smtplib.SMTP('smtp.gmail.com', 587)
 # Login  account email and password
 server.starttls()
-server.login('sundrammaurya1996@gmail.com', 'okua lodv qjve oszg')  # Update with your password
+server.login('sundrammaurya1996@gmail.com', 'okua lodv qjve oszg')  # gmail with your password
 
 with open("sum_by_date.xlsx", 'rb') as file:
     file_data = file.read()
