@@ -11,7 +11,7 @@ def data_header(file_path):
             if file.endswith('.csv'):
                 with zip.open(file) as csv_file:
                     df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
-                    print(len(df))
+                    # print(len(df))
                     return df.columns.tolist()
 
 def merge_csv(file_paths, new_file):
@@ -42,27 +42,20 @@ def merge_csv(file_paths, new_file):
 def merge_files_in_folder(folder_path, new_zip_file):
     files_in_folder = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith('.zip')]
     
-    merge_csv(files_in_folder, new_zip_file)
+  
 
- # Create a new folder path within the provided folder path
     new_folder_path = os.path.join(folder_path, 'Merged_Files')
 
-    # Create the new folder
-    os.makedirs(new_folder_path, exist_ok=True)
 
-    # Create the full path for the new ZIP file within the new folder
     new_zip_file_path = os.path.join(new_folder_path, new_zip_file)
 
-    # Call the function to merge files in the folder and save the merged file in the new folder
     merge_csv(files_in_folder, new_zip_file_path)
 
-# Define the folder path containing CSV files
-folder_path = 'D:\\pandas'  # Replace this with your folder path
+folder_path = 'D:\\pandas' 
 
 # New file name for merged data
 new_zip_file = 'new_file_merge.zip'
 
-# Call the function to merge files in the folder and save in a new folder within the same directory
 merge_files_in_folder(folder_path, new_zip_file)
 
 
