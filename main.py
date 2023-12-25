@@ -39,24 +39,23 @@ def merge_csv(file_paths, new_file):
     with zipfile.ZipFile(new_file, 'w', zipfile.ZIP_DEFLATED) as zip_output:
         zip_output.writestr('merged_data.csv', csv_buffer.getvalue())
 
-def merge_files_in_folder(folder_path, new_zip_file):
-    files_in_folder = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith('.zip')]
+# globle path select folder
+def merge_files_folder(folder_path, new_zip):
+    folder = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith('.zip')]
     
-  
-
     new_folder_path = os.path.join(folder_path, 'Merged_Files')
 
 
-    new_zip_file_path = os.path.join(new_folder_path, new_zip_file)
+    zip_file_path = os.path.join(new_folder_path, new_zip)
 
-    merge_csv(files_in_folder, new_zip_file_path)
+    merge_csv(folder, zip_file_path)
 
 folder_path = 'D:\\pandas' 
 
 # New file name for merged data
-new_zip_file = 'new_file_merge.zip'
+new_file = 'new_file_merge.zip'
 
-merge_files_in_folder(folder_path, new_zip_file)
+merge_files_folder(folder_path, new_file)
 
 
 
