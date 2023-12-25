@@ -19,7 +19,7 @@ def data_header(file_path):
         for file in zip_files:
             if file.endswith('.csv'):
                 with zip.open(file) as csv_file:
-                    df = pd.read_csv(io.TextIOWrapper(csv_file))
+                    df = pd.read_csv(io.TextIOWrapper(csv_file),low_memory=False)
                     print(len(df))
                     return df.columns.tolist()
 
@@ -34,10 +34,13 @@ def merge_csv(files, new_file):
             for zip_file in zip_files:
                 if zip_file.endswith('.csv'):
                     with zip.open(zip_file) as csv_file:
-                        df = pd.read_csv(io.TextIOWrapper(csv_file))
-                        merged = pd.concat([merged, df], ignore_index=True)
-                       
-
+                        df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
+                        if merged.empty:
+                            merged = df.copy()
+                            print("Success")
+                        else:
+                            merged = pd.concat([merged, df], ignore_index=True)
+                
     # Save merged data csv 
     csv_buffer = io.StringIO()
     merged.to_csv(csv_buffer, index=False)
