@@ -1,35 +1,25 @@
-import zipfile
+
 import pandas as pd
+import zipfile
 import io
+import os
 
-
-# List of ZIP files
-data =  ['1703292302138_FTP_CdrShortReportLead_USER_116_FB_22_12_HPMP_ABC_M2_xmas-2-5k_2524_34837_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip', 
-        '1703292302608_FTP_CdrShortReportLead_USER_116_FB_22_12_HPMP_ABC_M2_cg_1944_34838_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
-        '1703292302772_FTP_CdrShortReportLead_USER_116_FB_26_12_LP_ABCD_M1_cg-testt_1981_34885_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
-        '1703292302858_FTP_CdrShortReportLead_USER_116_FB_26_12_LP_ABCD_M1_final-emi-5k-testt_2544_34887_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
-        '1703292302939_FTP_CdrShortReportLead_USER_116_Niro_26_12_HPMP_ABC_M2_cg-test_1980_34891_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
-        '1703292303113_FTP_CdrShortReportLead_USER_116_FB_26_12_HPMP_ABC_M2_cg-testt_1981_34893_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
-        '1703292303196_FTP_CdrShortReportLead_USER_116_FB_26_12_HPMP_ABC_M2_final-emi-5k-testt_2544_34894_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip'
-        ]
-# Extract header from the first CSV file inside the ZIP
 def data_header(file_path):
     with zipfile.ZipFile(file_path, 'r') as zip:
         zip_files = zip.namelist()
         for file in zip_files:
             if file.endswith('.csv'):
                 with zip.open(file) as csv_file:
-                    df = pd.read_csv(io.TextIOWrapper(csv_file),low_memory=False)
+                    df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
                     print(len(df))
                     return df.columns.tolist()
 
-# Merge CSV files and create new ZIP with merged data
-def merge_csv(files, new_file):
-    header = data_header(files[0])
+def merge_csv(file_paths, new_file):
+    header = data_header(file_paths[0])
     merged = pd.DataFrame(columns=header)
-    
-    for file in files:
-        with zipfile.ZipFile(file, 'r') as zip:
+
+    for file_path in file_paths:
+        with zipfile.ZipFile(file_path, 'r') as zip:
             zip_files = zip.namelist()
             for zip_file in zip_files:
                 if zip_file.endswith('.csv'):
@@ -41,21 +31,110 @@ def merge_csv(files, new_file):
                         else:
                             merged = pd.concat([merged, df], ignore_index=True)
                 
-    # Save merged data csv 
     csv_buffer = io.StringIO()
     merged.to_csv(csv_buffer, index=False)
-    print("Total merge file row count:", len(merged))  # total file row count data
+    print("Total merge file row count:", len(merged))
     csv_buffer.seek(0)
 
-    #  new ZIP file merged CSV data
     with zipfile.ZipFile(new_file, 'w', zipfile.ZIP_DEFLATED) as zip_output:
         zip_output.writestr('merged_data.csv', csv_buffer.getvalue())
-        
-# merge new file name
+
+def merge_files_in_folder(folder_path, new_zip_file):
+    files_in_folder = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith('.zip')]
+    
+    merge_csv(files_in_folder, new_zip_file)
+
+ # Create a new folder path within the provided folder path
+    new_folder_path = os.path.join(folder_path, 'Merged_Files')
+
+    # Create the new folder
+    os.makedirs(new_folder_path, exist_ok=True)
+
+    # Create the full path for the new ZIP file within the new folder
+    new_zip_file_path = os.path.join(new_folder_path, new_zip_file)
+
+    # Call the function to merge files in the folder and save the merged file in the new folder
+    merge_csv(files_in_folder, new_zip_file_path)
+
+# Define the folder path containing CSV files
+folder_path = 'D:\\pandas'  # Replace this with your folder path
+
+# New file name for merged data
 new_zip_file = 'new_file_merge.zip'
 
-# function call to run
-merge_csv(data, new_zip_file)
+# Call the function to merge files in the folder and save in a new folder within the same directory
+merge_files_in_folder(folder_path, new_zip_file)
+
+
+
+
+
+
+
+
+
+
+
+
+# import zipfile
+# import pandas as pd
+# import io
+
+
+
+# # List of ZIP files
+# data =  ['1703292302138_FTP_CdrShortReportLead_USER_116_FB_22_12_HPMP_ABC_M2_xmas-2-5k_2524_34837_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip', 
+#         '1703292302608_FTP_CdrShortReportLead_USER_116_FB_22_12_HPMP_ABC_M2_cg_1944_34838_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
+#         '1703292302772_FTP_CdrShortReportLead_USER_116_FB_26_12_LP_ABCD_M1_cg-testt_1981_34885_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
+#         '1703292302858_FTP_CdrShortReportLead_USER_116_FB_26_12_LP_ABCD_M1_final-emi-5k-testt_2544_34887_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
+#         '1703292302939_FTP_CdrShortReportLead_USER_116_Niro_26_12_HPMP_ABC_M2_cg-test_1980_34891_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
+#         '1703292303113_FTP_CdrShortReportLead_USER_116_FB_26_12_HPMP_ABC_M2_cg-testt_1981_34893_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip',
+#         '1703292303196_FTP_CdrShortReportLead_USER_116_FB_26_12_HPMP_ABC_M2_final-emi-5k-testt_2544_34894_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip'
+#         ]
+# # Extract header from the first CSV file inside the ZIP
+# def data_header(file_path):
+#     with zipfile.ZipFile(file_path, 'r') as zip:
+#         zip_files = zip.namelist()
+#         for file in zip_files:
+#             if file.endswith('.csv'):
+#                 with zip.open(file) as csv_file:
+#                     df = pd.read_csv(io.TextIOWrapper(csv_file),low_memory=False)
+#                     print(len(df))
+#                     return df.columns.tolist()
+
+# # Merge CSV files and create new ZIP with merged data
+# def merge_csv(files, new_file):
+#     header = data_header(files[0])
+#     merged = pd.DataFrame(columns=header)
+
+#     for file in files:
+#         with zipfile.ZipFile(file, 'r') as zip:
+#             zip_files = zip.namelist()
+#             for zip_file in zip_files:
+#                 if zip_file.endswith('.csv'):
+#                     with zip.open(zip_file) as csv_file:
+#                         df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
+#                         if merged.empty:
+#                             merged = df.copy()
+#                             print("Success")
+#                         else:
+#                             merged = pd.concat([merged, df], ignore_index=True)
+                
+#     # Save merged data csv 
+#     csv_buffer = io.StringIO()
+#     merged.to_csv(csv_buffer, index=False)
+#     print("Total merge file row count:", len(merged))  # total file row count data
+#     csv_buffer.seek(0)
+
+#     #  new ZIP file merged CSV data
+#     with zipfile.ZipFile(new_file, 'w', zipfile.ZIP_DEFLATED) as zip_output:
+#         zip_output.writestr('merged_data.csv', csv_buffer.getvalue())
+        
+# # merge new file name
+# new_zip_file = 'new_file_merge.zip'
+
+# # function call to run
+# merge_csv(data, new_zip_file)
 
 
 
