@@ -14,7 +14,9 @@ def data_header(file_path):
                     print(len(df))
                     return df.columns.tolist()
 
-def merge_csv(file_paths, new_file):
+def merge_folder(folder_path, new_file):
+    file_paths = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.zip')]
+
     header = data_header(file_paths[0])
     merged = pd.DataFrame(columns=header)
 
@@ -27,15 +29,11 @@ def merge_csv(file_paths, new_file):
                         df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
                         if merged.empty:
                             merged = df.copy()
-                            print("Success")
                         else:
                             merged = pd.concat([merged, df], ignore_index=True)
                 
     csv_buffer = io.StringIO()
-
-    
     merged.to_csv(csv_buffer, index=False)
-    print("Total merge file row count:", len(merged))
     csv_buffer.seek(0)
 
     with zipfile.ZipFile(new_file, 'w', zipfile.ZIP_DEFLATED) as zip_output:
@@ -43,17 +41,11 @@ def merge_csv(file_paths, new_file):
 
 folder_path = '/home/niromoney'
 
-# List all files in the folder and filter only ZIP files
-try:
-    folder_paths = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.zip')]
-except:
-    print("File not found")
-
-# New file name for merged data
 new_file = 'new_file_merge.zip'
 
 
-merge_csv(folder_paths, new_file)
+merge_folder(folder_path, new_file)
+
 
 
 
