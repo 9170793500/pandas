@@ -39,24 +39,22 @@ def merge_csv(file_paths, new_file):
     with zipfile.ZipFile(new_file, 'w', zipfile.ZIP_DEFLATED) as zip_output:
         zip_output.writestr('merged_data.csv', csv_buffer.getvalue())
 
-# globle path select folder
-def merge_files_folder(folder_path, new_zip):
-    folder = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith('.zip')]
-    
-    new_folder = os.path.join(folder_path, 'Merged_Files')
 
 
-    zip_file_path = os.path.join(new_folder, new_zip)
 
-    merge_csv(folder, zip_file_path)
+folder_path = '/home/niromoney'
 
-folder_path = '/home/niromoney' 
+# List all files in the folder and filter only ZIP files
+try:
+    file_paths = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.zip')]
+except:
+    print("File not found")
 
 # New file name for merged data
 new_file = 'new_file_merge.zip'
 
-merge_files_folder(folder_path, new_file)
 
+merge_csv(file_paths, new_file)
 
 
 
