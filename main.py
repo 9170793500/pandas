@@ -11,7 +11,7 @@ def data_header(file_path):
             if file.endswith('.csv'):
                 with zip.open(file) as csv_file:
                     df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
-                    # print(len(df))
+                    print(len(df))
                     return df.columns.tolist()
 
 def merge_csv(file_paths, new_file):
@@ -43,14 +43,14 @@ def merge_csv(file_paths, new_file):
 def merge_files_folder(folder_path, new_zip):
     folder = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, file)) and file.endswith('.zip')]
     
-    new_folder_path = os.path.join(folder_path, 'Merged_Files')
+    new_folder = os.path.join(folder_path, 'Merged_Files')
 
 
-    zip_file_path = os.path.join(new_folder_path, new_zip)
+    zip_file_path = os.path.join(new_folder, new_zip)
 
     merge_csv(folder, zip_file_path)
 
-folder_path = 'D:\\pandas' 
+folder_path = '/home/niromoney' 
 
 # New file name for merged data
 new_file = 'new_file_merge.zip'
