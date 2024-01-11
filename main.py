@@ -1,50 +1,53 @@
 
-import pandas as pd
-import zipfile
-import io
-import os
 
-def data_header(file_path):
-    with zipfile.ZipFile(file_path, 'r') as zip:
-        zip_files = zip.namelist()
-        for file in zip_files:
-            if file.endswith('.csv'):
-                with zip.open(file) as csv_file:
-                    df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
-                    print(len(df))
-                    return df.columns.tolist()
 
-def merge_folder(folder_path, new_file):
-    file_paths = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.zip')]
 
-    header = data_header(file_paths[0])
-    merged = pd.DataFrame(columns=header)
+# import pandas as pd
+# import zipfile
+# import io
+# import os
 
-    for file_path in file_paths:
-        with zipfile.ZipFile(file_path, 'r') as zip:
-            zip_files = zip.namelist()
-            for zip_file in zip_files:
-                if zip_file.endswith('.csv'):
-                    with zip.open(zip_file) as csv_file:
-                        df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
-                        if merged.empty:
-                            merged = df.copy()
-                        else:
-                            merged = pd.concat([merged, df], ignore_index=True)
+# def data_header(file_path):
+#     with zipfile.ZipFile(file_path, 'r') as zip:
+#         zip_files = zip.namelist()
+#         for file in zip_files:
+#             if file.endswith('.csv'):
+#                 with zip.open(file) as csv_file:
+#                     df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
+#                     print(len(df))
+#                     return df.columns.tolist()
+
+# def merge_folder(folder_path, new_file):
+#     file_paths = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.zip')]
+
+#     header = data_header(file_paths[0])
+#     merged = pd.DataFrame(columns=header)
+
+#     for file_path in file_paths:
+#         with zipfile.ZipFile(file_path, 'r') as zip:
+#             zip_files = zip.namelist()
+#             for zip_file in zip_files:
+#                 if zip_file.endswith('.csv'):
+#                     with zip.open(zip_file) as csv_file:
+#                         df = pd.read_csv(io.TextIOWrapper(csv_file), low_memory=False)
+#                         if merged.empty:
+#                             merged = df.copy()
+#                         else:
+#                             merged = pd.concat([merged, df], ignore_index=True)
                 
-    csv_buffer = io.StringIO()
-    merged.to_csv(csv_buffer, index=False)
-    csv_buffer.seek(0)
+#     csv_buffer = io.StringIO()
+#     merged.to_csv(csv_buffer, index=False)
+#     csv_buffer.seek(0)
 
-    with zipfile.ZipFile(new_file, 'w', zipfile.ZIP_DEFLATED) as zip_output:
-        zip_output.writestr('merged_data.csv', csv_buffer.getvalue())
+#     with zipfile.ZipFile(new_file, 'w', zipfile.ZIP_DEFLATED) as zip_output:
+#         zip_output.writestr('merged_data.csv', csv_buffer.getvalue())
 
-folder_path = '/home/niromoney'
+# folder_path = '/home/niromoney'
 
-new_file = 'new_file_merge.zip'
+# new_file = 'new_file_merge.zip'
 
 
-merge_folder(folder_path, new_file)
+# merge_folder(folder_path, new_file)
 
 
 
@@ -60,8 +63,6 @@ merge_folder(folder_path, new_file)
 # import zipfile
 # import pandas as pd
 # import io
-
-
 
 # # List of ZIP files
 # data =  ['1703292302138_FTP_CdrShortReportLead_USER_116_FB_22_12_HPMP_ABC_M2_xmas-2-5k_2524_34837_MLT_M3_22-12-2023-TO-22-12-2023.csv.zip', 
@@ -168,19 +169,6 @@ merge_folder(folder_path, new_file)
 
 
 
-
-
-# import pandas as pd
-# from datetime import datetime
-
-# data = pd.read_excel('New_sdm/output_merged_daa.xlsx')
-
-# current_date = datetime.now().strftime("%Y%m%d")
-
-# file_name = f"data_{current_date}.xlsx" 
-
-# s=data.to_excel(file_name, index=False)  
-# print(s)
 
 
 
@@ -297,6 +285,8 @@ merge_folder(folder_path, new_file)
 
 # server.send_message(msg)
 # server.quit()
+
+
 
 
 
